@@ -21,15 +21,11 @@
   </div>
   <div class="field">
     <%= f.label :orientation %><br />
-    <%= f.text_field :orientation %>
-  </div>
-  <div class="field">
-    <%= f.label :is_matched %><br />
-    <%= f.check_box :is_matched %>
-  </div>
-  <div class="field">
-    <%= f.label :matched_with %><br />
-    <%= f.text_field :matched_with %>
+    <select name="user[orientation]">
+	<option>Straight</option>
+	<option>Gay</option>
+	<option>Bi</option>
+    </select>
   </div>
   <div class="actions">
     <%= f.submit %>
