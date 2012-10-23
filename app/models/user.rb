@@ -3,11 +3,11 @@ class User < ActiveRecord::Base
   before_create :find_matches
 
   def find_matches
-    if self.is_male == true
+    if self.is_male
       if self.orientation == 'Straight'
         User.all.each do |u|
-          if u.is_matched == false
-            if likes_chicks(u.orientation, u.is_male) == true
+          if !u.is_matched
+            if likes_guys(u.orientation, u.is_male) and !u.is_male
               u.is_matched = true
               u.matched_with = self.name
               self.is_matched = true
@@ -17,10 +17,23 @@ class User < ActiveRecord::Base
             end
           end
         end
-      elsif self.orientation != 'Straight'
+      elsif self.orientation == 'Gay'
         User.all.each do |u|
-          if u.is_matched == false
-            if likes_chicks(u.orientation, u.is_male) == true
+          if !u.is_matched
+            if likes_guys(u.orientation, u.is_male) and u.is_male
+              u.is_matched = true
+              u.matched_with = self.name
+              self.is_matched = true
+              self.matched_with = u.name
+              u.save
+              return true
+            end
+          end
+        end 
+      elsif self.orientation == 'Bi'
+        User.all.each do |u|
+          if !u.is_matched
+            if likes_guys(u.orientation, u.is_male) and u.orientation != 'Straight'
               u.is_matched = true
               u.matched_with = self.name
               self.is_matched = true
@@ -34,8 +47,8 @@ class User < ActiveRecord::Base
     else
       if self.orientation == 'Straight'
         User.all.each do |u|
-          if u.is_matched == false
-            if likes_chicks(u.orientation, u.is_male) == true
+          if !u.is_matched
+            if likes_girls(u.orientation, u.is_male) and u.is_male
               u.is_matched = true
               u.matched_with = self.name
               self.is_matched = true
@@ -45,10 +58,23 @@ class User < ActiveRecord::Base
             end
           end
         end
-      elsif self.orientation != 'Straight'
+      elsif self.orientation == 'Gay'
         User.all.each do |u|
-          if u.is_matched == false
-            if likes_guys(u.orientation, u.is_male) == true
+          if !u.is_matched
+            if likes_girls(u.orientation, u.is_male) and !u.is_male
+              u.is_matched = true
+              u.matched_with = self.name
+              self.is_matched = true
+              self.matched_with = u.name
+              u.save
+              return true
+            end
+          end
+        end 
+      elsif self.orientation == 'Bi'
+        User.all.each do |u|
+          if !u.is_matched
+            if likes_girls(u.orientation, u.is_male) and u.orientation != 'Straight'
               u.is_matched = true
               u.matched_with = self.name
               self.is_matched = true
@@ -62,13 +88,21 @@ class User < ActiveRecord::Base
     end 
   end
 
-  def likes_chicks(orientation, gender)
-    if gender == false
+  def update_matches(first, second)
+    first.is_matched = true
+    second.is_matched = true
+    first.matched_with = second.name
+    second.matched_with = first.name
+    second.save
+  end
+
+  def likes_girls(orientation, is_male)
+    if !is_male
       if orientation != 'Straight'
         return true
       end
     end
-    if gender == true
+    if is_male
       if orientation != 'Gay'
         return true
       end
@@ -76,27 +110,13 @@ class User < ActiveRecord::Base
     return false
   end
 
-  def likes_guys(orientation, gender)
-    if gender == true
+  def likes_guys(orientation, is_male)
+    if is_male
       if orientation != 'Straight'
         return true
       end
     end
-    if gender == false
-      if orientation != 'Gay'
-        return true
-      end
-    end
-    return false
-  end 
-
-  def likes_guys(orientation, gender)
-    if gender == true
-      if orientation != 'Straight'
-        return true
-      end
-    end
-    if gender == false
+    if !is_male 
       if orientation != 'Gay'
         return true
       end
