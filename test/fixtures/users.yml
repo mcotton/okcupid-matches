@@ -1,0 +1,15 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  name: MyString
+  is_male: false
+  orientation: MyString
+  is_matched: false
+  matched_with: MyString
+
+two:
+  name: MyString
+  is_male: false
+  orientation: MyString
+  is_matched: false
+  matched_with: MyString
